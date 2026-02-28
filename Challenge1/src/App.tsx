@@ -1,56 +1,48 @@
-import { useState, useEffect } from "react";
-import "./App.css";
-import Loader from "./components/Loader";
-import ContactForm from "./components/ContactForm";
-import ContactList from "./components/ContactList";
+import { Redirect, Route } from "react-router-dom";
+import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
+import { IonReactRouter } from "@ionic/react-router";
 
-interface Contact {
-  id: number;
-  name: string;
-  phone: string;
-}
+import Home from "./pages/Home";
+import Create from "./pages/Create";
+import Detail from "./pages/Detail";
 
-function App() {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+/* Core CSS required for Ionic components to work properly */
+import "@ionic/react/css/core.css";
 
-  // Simulating initial data loading
-  useEffect(() => {
-    setTimeout(() => {
-      const initialContacts: Contact[] = [
-        { id: 1, name: "Alejandro Villegas", phone: "302893432" },
-        { id: 2, name: "Julia Rodallega", phone: "3212046359" },
-        { id: 3, name: "Alberto Sinisterra", phone: "3003438971" },
-      ];
-      setContacts(initialContacts);
-      setIsLoading(false);
-    }, 2000);
-  }, []);
+/* Basic CSS for apps built with Ionic */
+import "@ionic/react/css/normalize.css";
+import "@ionic/react/css/structure.css";
+import "@ionic/react/css/typography.css";
 
-  const addContact = (name: string, phone: string) => {
-    const newContact: Contact = {
-      id: Date.now(),
-      name,
-      phone,
-    };
-    setContacts([...contacts, newContact]);
-  };
+/* Optional CSS utils that can be commented out */
+import "@ionic/react/css/padding.css";
+import "@ionic/react/css/float-elements.css";
+import "@ionic/react/css/text-alignment.css";
+import "@ionic/react/css/text-transformation.css";
+import "@ionic/react/css/flex-utils.css";
+import "@ionic/react/css/display.css";
 
-  const deleteContact = (id: number) => {
-    setContacts(contacts.filter((contact) => contact.id !== id));
-  };
+setupIonicReact();
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
-      <h1 style={{ textAlign: "center" }}>Contact Management</h1>
-      <ContactForm onAddContact={addContact} />
-      <ContactList contacts={contacts} onDeleteContact={deleteContact} />
-    </div>
-  );
-}
+const App: React.FC = () => (
+  <IonApp>
+    <IonReactRouter>
+      <IonRouterOutlet>
+        <Route exact path="/home">
+          <Home />
+        </Route>
+        <Route exact path="/create">
+          <Create />
+        </Route>
+        <Route exact path="/detail/:id">
+          <Detail />
+        </Route>
+        <Route exact path="/">
+          <Redirect to="/home" />
+        </Route>
+      </IonRouterOutlet>
+    </IonReactRouter>
+  </IonApp>
+);
 
 export default App;
